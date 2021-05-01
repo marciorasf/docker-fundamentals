@@ -1,2 +1,2 @@
 # docker-study
-Some notes and examples I did while studying docker
+Some concepts, notes and examples about docker
