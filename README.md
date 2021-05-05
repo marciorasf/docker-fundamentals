@@ -17,7 +17,7 @@ Consequently, the biggest advantage of using containers is the reduction of the 
 
 This advantage can be seen clearly when we compare the size and initialization. Most containers have only megabytes in size and take seconds do start, while VMs have gygabytes and take minutes to initialize.
 
-### What is a image
+### What is an image
 
 A image is file compoused of several layers that works as instructions to create containers.
 
