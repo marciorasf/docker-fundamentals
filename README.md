@@ -261,11 +261,47 @@ docker image build -t image_example -f ./Dockerfile .
 
 A build’s context is the set of files located in the specified PATH or URL.
 
+If you want to see the cache working, you can run the build command again and see the "---> Using cache" messages.
+
 ### List images
+Now let's see the created image:
+
+```bash
+docker image ls
+```
+
+You should see the created image and the others images used until now.
 
 ### Run container with created image
 
+With the image created, let's run a container using the image:
+
+```bash
+docker container run --name example -p 8080:8080 image_example
+```
+
+You should see the following message:
+
+```bash
+Example app listening at http://localhost:8080
+```
+
+And if you access the link you can  see the same "Hello World!" message.
+
 ### Push to Docker Hub
+
+As said in the intro, the Docker Hub is the default Docker registry.
+
+Now we will push our image to the Docker Hub.
+
+First you need to register yourself on [Docker Hub](https://hub.docker.com/).
+
+After the register you can login in Docker on the terminal:
+
+```bash
+# Your credentials will be asked, just enter them
+docker login
+```
 
 ### Tag image
 
