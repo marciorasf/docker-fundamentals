@@ -17,10 +17,6 @@ Consequently, the biggest advantage of using containers is the reduction of the 
 
 This advantage can be seen clearly when we compare the size and initialization. Most containers have only megabytes in size and take seconds do start, while VMs have gygabytes and take minutes to initialize.
 
-### What is an image
-
-A image is file compoused of several layers that works as instructions to create containers.
-
 ---
 
 ## Why use it
@@ -56,7 +52,13 @@ A Docker registry stores Docker images. The default registry used with Docker is
 ### Requirements 
 Docker must be installed. The installation guide can be found [here](https://docs.docker.com/engine/install/ubuntu/).
 
-### Create container
+To this specific tutorial is recommended to fork the repo, so you can use the server on it to create your image.
+
+### Container
+
+A container is a isolated environment used to run apps inside it. The "isolated" characteristic is essential to the idempotency provided by the use of containers, which means that no matter where the container is executed, the behavior should be the same.
+
+#### Create container
 ```bash
 docker container run hello-world
 ```
@@ -71,7 +73,7 @@ After the message, the image starts to be downloaded. The download is made from 
 
 If you run the same command again, the image will be available locally, so it doesn't have to be downloaded again.
 
-### Dettached mode
+#### Dettached mode
 The hello-world container is created, executed and the finishes. But this is not the expected behavior for several other containers. Let's see an example using an nginx container.
 
 ```bash
@@ -86,7 +88,7 @@ docker container run -d nginx
 
 After the container creation, the process exits and container keeps running on background.
 
-### List containers
+#### List containers
 
 To see the your containers, use the following command:
 
@@ -104,7 +106,7 @@ docker container ls -a
 
 Now you should see the other containers.
 
-### Execute command on running container
+#### Execute command on running container
 
 You can execute commands inside containers:
 
@@ -112,7 +114,7 @@ You can execute commands inside containers:
 docker exec <container_name|container_id> <command>
 ```
 
-### Attach to running container
+#### Attach to running container
 
 To attach to a container running on background use the **attach** command:
 
@@ -120,7 +122,7 @@ To attach to a container running on background use the **attach** command:
 docker attach <container_name|container_id>
 ```
 
-### Port bind
+#### Port bind
 
 By default, the containers ports aren't accessible from outside docker. To overcome this problem, a port bind can be made using the **-p** option.
 
@@ -131,7 +133,7 @@ docker container run -p 8080:80 nginx
 
 Now, a nginx welcome should be displayed on http://localhost:8080
 
-### Interactive mode
+#### Interactive mode
 Some containers can run in interactive mode. For example a ubuntu container that can open a terminal. To achieve this, you have to use the **-it** option.
 
 ```bash
@@ -140,7 +142,7 @@ docker container run -it ubuntu /bin/bash
 
 Enter **exit** command to exit container.
 
-### Stop container
+#### Stop container
 
 To stop a container:
 
@@ -148,7 +150,7 @@ To stop a container:
 docker container stop <container_name|container_id>
 ```
 
-### Remove container
+#### Remove container
 
 When using Docker frequently, it's common that your pc ends up as a container cemetary. You can remove these dangling containers.
 
@@ -168,7 +170,7 @@ Other option is using **prune** to remove all stopped containers:
 docker container prune
 ```
 
-### Create named container
+#### Create named container
 
 An additional information: you also can create a container with a specific name:
 
@@ -176,9 +178,15 @@ An additional information: you also can create a container with a specific name:
 docker run --name mynginx nginx
 ```
 
-### Create image
+### Image
+
+A image is file compoused of several layers that works as instructions to create containers. A image is file compoused of several layers that works as instructions to create containers.
+
+#### Create image
 
 I will use a simple NodeJS server to explain the image part of Docker. This server is implemented on **server** folder.
+
+To  do the following steps correctly, your terminal must be on the **server** folder.
 
 If you have NodeJS installed, you can start the server using:
 
@@ -248,7 +256,7 @@ node_modules
 Now we can build the image:
 
 ```bash
-# docker image build -t <image_name> <PATH | URL>
+# docker image build -t <image_name> <path_to_context>
 # To this command works correctly your terminal should be in server folder
 docker image build -t image_example .   
 ```
@@ -263,7 +271,7 @@ A build’s context is the set of files located in the specified PATH or URL.
 
 If you want to see the cache working, you can run the build command again and see the "---> Using cache" messages.
 
-### List images
+#### List images
 Now let's see the created image:
 
 ```bash
@@ -272,7 +280,7 @@ docker image ls
 
 You should see the created image and the others images used until now.
 
-### Run container with created image
+#### Run container with created image
 
 With the image created, let's run a container using the image:
 
@@ -288,7 +296,7 @@ Example app listening at http://localhost:8080
 
 And if you access the link you can  see the same "Hello World!" message.
 
-### Push to Docker Hub
+#### Push to Docker Hub
 
 As said in the intro, the Docker Hub is the default Docker registry.
 
@@ -303,13 +311,90 @@ After the register you can login in Docker on the terminal:
 docker login
 ```
 
-### Tag image
+While logged in, you can push your imagem to Docker Hub.
 
+To do this you have to build your image using a name with your namespace on Docker Hub, like marciorasf/example. Also, is a good practice to always tag your images.
 
-### Network
+Let's rebuild the imagem with the correct name and a tag:
 
+```bash
+# docker image build -t <namespace>/<image_name>:<tag> <path_to_context>
+docker image build -t marciorasf/image_example:v1 .
+```
+
+Now we can push our image to Docker Hub:
+
+```bash
+# docker push <namespace>/<image_example>:<tag>
+docker push marciorasf/image_example:v1
+```
+
+If you don't no your namespace you can find it on the Docker Hub page:
+
+![Docker Hub namespace](./assets/docker_hub_namespace.png)
+
+Another good practice, is to always push a image with the **latest** tag when you push some now version.
+
+To do this, first we need to tag the image with **latest**:
+
+```bash
+# docker tag <namespace>/<image_name>:<existent_tag> <namespace>/<image_name>:<new_tag>
+docker tag marciorasf/image_example:v1 marciorasf/image_example:latest
+```
+Then, push it to Docker Hub:
+
+```bash
+docker push marciorasf/image_example:latest
+```
 
 ### Volume
 
+A volume
+
+### Network
+
+A nework
+
+## Docker Compose
+
+The docker compose
+
+## Miscellaneous
+
+I've put in this section some additional information and tips that may help you using Docker.
+
+### Docker command default skeleton
+
+Looking back our tutorial, we can see that the Docker commands assume a kind of a standard skeleton. Understanding the skeleton, you can infer a lot of commands without having to consult the docs. The skeleton is the following:
+
+```bash
+docker <object_type> <command>
+```
+
+Some examples:
+
+```bash
+docker container list
+docker image list
+docker volume list
+docker image rm <id|name>
+docker container rm <id|name>
+```
 
 ### Prune
+
+The **prune** command is a convenient way to clean your docker objects
+
+```bash
+# docker <object_type> prune
+# object_type can be: container, image, network, volume or system
+docker system prune
+```
+
+### Docker ps
+
+The **ps** command is the same as **docker container ls**. I prefer using **docker container ls** because it's more explicit.
+
+```bash
+docker ps
+```
