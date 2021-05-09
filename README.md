@@ -49,7 +49,8 @@ A Docker registry stores Docker images. The default registry used with Docker is
 
 ## How to use
 
-### Requirements 
+### Requirements
+
 Docker must be installed. The installation guide can be found [here](https://docs.docker.com/engine/install/ubuntu/).
 
 To this specific tutorial is recommended to fork the repo, so you can use the server on it to create your image.
@@ -59,6 +60,7 @@ To this specific tutorial is recommended to fork the repo, so you can use the se
 A container is a isolated environment used to run apps inside it. The "isolated" characteristic is essential to the idempotency provided by the use of containers, which means that no matter where the container is executed, the behavior should be the same.
 
 #### Create container
+
 ```bash
 docker container run hello-world
 ```
@@ -74,6 +76,7 @@ After the message, the image starts to be downloaded. The download is made from 
 If you run the same command again, the image will be available locally, so it doesn't have to be downloaded again.
 
 #### Dettached mode
+
 The hello-world container is created, executed and the finishes. But this is not the expected behavior for several other containers. Let's see an example using an nginx container.
 
 ```bash
@@ -134,6 +137,7 @@ docker container run -p 8080:80 nginx
 Now, a nginx welcome should be displayed on http://localhost:8080
 
 #### Interactive mode
+
 Some containers can run in interactive mode. For example a ubuntu container that can open a terminal. To achieve this, you have to use the **-it** option.
 
 ```bash
@@ -272,6 +276,7 @@ A build’s context is the set of files located in the specified PATH or URL.
 If you want to see the cache working, you can run the build command again and see the "---> Using cache" messages.
 
 #### List images
+
 Now let's see the created image:
 
 ```bash
