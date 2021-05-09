@@ -6,8 +6,7 @@ Docker is a software that providade several tools to work with containers with e
 
 ### What is a container
 
-A container is a isolated environment used to run apps inside it. The "isolated" characteristic is essential to the idempotency provided by the use of containers, which means that no matter where the container is executed, the behavior should be the same.
-
+A container is a isolated environment, with the configurations and dependencies needed to execute apps properly inside it. The "isolated" characteristic is essential to the idempotency provided by the use of containers, which means that no matter where the container is executed, the behavior should be the same.
 
 ### Container vs Virtual Machine
 
@@ -59,7 +58,7 @@ To this specific tutorial is recommended to fork the repo, so you can use the se
 
 A container is a isolated environment used to run apps inside it. The "isolated" characteristic is essential to the idempotency provided by the use of containers, which means that no matter where the container is executed, the behavior should be the same.
 
-#### Create container
+#### Run container
 
 ```bash
 docker container run hello-world
@@ -134,7 +133,7 @@ By default, the containers ports aren't accessible from outside docker. To overc
 docker container run -p 8080:80 nginx
 ```
 
-Now, a nginx welcome should be displayed on http://localhost:8080
+Now, a nginx welcome should be displayed on <http://localhost:8080>
 
 #### Interactive mode
 
@@ -152,6 +151,22 @@ To stop a container:
 
 ```bash
 docker container stop <container_name|container_id>
+```
+
+#### Start stoppepd containers
+
+Running **ls** command with **-a** option, should show you the nginx container.
+
+If you run again
+
+```bash
+docker container run -d -p 8080:80 nginx
+```
+
+A new nginx container will be created. Instead, you can just restart the old container with:
+
+```bash
+docker container start <name|id>
 ```
 
 #### Remove container
@@ -209,7 +224,6 @@ If you access the link, you can see a "Hello World!" that means that the server 
 Now we can create an image to this server.
 
 First, we must create a file named Dockerfile.
-
 
 The content of the Dockerfile is:
 
@@ -346,19 +360,26 @@ To do this, first we need to tag the image with **latest**:
 # docker tag <namespace>/<image_name>:<existent_tag> <namespace>/<image_name>:<new_tag>
 docker tag marciorasf/image_example:v1 marciorasf/image_example:latest
 ```
+
 Then, push it to Docker Hub:
 
 ```bash
 docker push marciorasf/image_example:latest
 ```
 
+### Network
+
+A nework
+
 ### Volume
 
 A volume
 
-### Network
+#### Host Volume
 
-A nework
+#### Anonymous Volume
+
+#### Named Volume
 
 ## Docker Compose
 
@@ -367,6 +388,12 @@ The docker compose
 ## Miscellaneous
 
 I've put in this section some additional information and tips that may help you using Docker.
+
+### Good references
+
+- [TechWorld with Nana](https://www.youtube.com/watch?v=3c-iBn73dDE)
+- [Amigoscode](https://www.youtube.com/watch?v=p28piYY_wv8)
+- [Docker](https://docs.docker.com/)
 
 ### Docker command default skeleton
 
