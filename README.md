@@ -369,7 +369,45 @@ docker push marciorasf/image_example:latest
 
 ### Network
 
-A nework
+When using Docker containers, frequently we have to enable the communication between containers. For this purpose, there are **networks**. As we can infer by the need to expose the ports of the container to the host using **bind**, the default behavior of Docker is having an internal network.
+
+Actually, Docker has a default network that all containers uses if a specific network is not defined.
+
+In this topic I'll show you how to create a network and use it with the containers.
+
+#### Drivers
+
+Before creating networks, we must know that each network needs a **driver**. A driver is like a pluggable config that enables Docker networks to do intede Docker has several network drivers by default that can be used to accomplish the desired network configuration. I won't dive in the several available drivers because it's a more advanced topic than the intend of this tutorial.
+
+For the moment, I believe that you should only know that the default driver is the **bridge**, that are used when standalone containers needs to communicate with each other.
+
+If you want to know more about networks, check the [oficial docs](https://docs.docker.com/network/).
+
+#### Create a network
+
+```bash
+docker network create -d bridge network_example
+```
+
+Now let's see the created network:
+
+```bash
+docker network ls
+```
+
+#### Using the network with containers
+
+We'll use a MongoDB and a MongoExpress (SBGB for mongo) container and communicate them using our created network:
+
+```bash
+# run the MongoDB container. We have to name the container so the MongoExpress can find it
+docker container run -d --net network_example --name mongo mongo:4.4
+
+# run the MongoExpress container binding the port, so we can access via browser
+docker container run --net network_example -p 8081:8081 mongo-express:0.54
+```
+
+Now both the MongoDB and MongoExpress containers are running in the **network_example** network. You should be able to open MongoExpress on http://localhost:8081.
 
 ### Volume
 
@@ -413,7 +451,7 @@ docker image rm <id|name>
 docker container rm <id|name>
 ```
 
-### Prune
+### prune
 
 The **prune** command is a convenient way to clean your docker objects
 
@@ -423,10 +461,18 @@ The **prune** command is a convenient way to clean your docker objects
 docker system prune
 ```
 
-### Docker ps
+### ps
 
 The **ps** command is the same as **docker container ls**. I prefer using **docker container ls** because it's more explicit.
 
 ```bash
 docker ps
+```
+
+### logs
+
+A useful command to see the logs of a container running on dettached mode is:
+
+```bash
+docker container logs <id|name>
 ```
