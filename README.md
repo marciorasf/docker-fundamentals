@@ -2,6 +2,8 @@
 
 This repo is a guide to learning the fundamentals of Docker. I wrote it while I was learning to help me cement the knowledge acquired, and of course, to be a guider to help others.
 
+I tried to write only the basics here, as the repo name says, only the fundamentals to start using Docker properly.
+
 ## What is Docker
 
 Docker is a software that providade several tools to work with containers with efficiency, both to the development perspective and the execution performance.
@@ -224,7 +226,7 @@ docker container prune
 
 ### Image
 
-A image is file compoused of several layers that works as instructions to create containers. A image is file compoused of several layers that works as instructions to create containers.
+A image is file composed of several layers that works as instructions to create containers. A image is file composed of several layers that works as instructions to create containers.
 
 #### Create image
 
@@ -244,7 +246,7 @@ This message should be displayed:
 Example app listening at http://localhost:3000
 ```
 
-If you access the link, you can see a "Hello World!" that means that the server is running correctly.
+If you access the link, you can see a "Hello World!". This means that the server is running correctly.
 
 Now we can create an image to this server.
 
@@ -348,7 +350,7 @@ Now we will push our image to the Docker Hub.
 
 First you need to register yourself on [Docker Hub](https://hub.docker.com/).
 
-After the register you can login in Docker on the terminal:
+After been already register, you can login in Docker using the terminal:
 
 ```bash
 # Your credentials will be asked, just enter them
@@ -436,13 +438,54 @@ Now both the MongoDB and MongoExpress containers are running in the **network_ex
 
 ### Volume
 
-A volume
+Docker volumes are used for data persistence when using container on Docker. The most clear example of the need of volumes is the persistence that is needed for running databases.
 
-#### Host Volume
+For example: if you're using a MongoDB inside a Docker container, you can save files inside and it will work properly as long as the container keeps running. But, if for some reason the container has to stop, when it starts again the database will be empty.
 
-#### Anonymous Volume
+To understand the volumes on Docker, you need to know that when you start a container, it has a virtual file system which is the place that the container stores the data. What a volume does is basically mount a folder of the host file system into the virtual file system of the Container. After been mounted, everything that stored on that virtual file system folder will be replicated to host folder.
 
-#### Named Volume
+There are 3 volume types in Docker. Let's take a look on them.
+
+For the demos will use a MongoDB and a MongoExpress containers like we created on the network section.
+
+##### Host Volume
+
+This type of volume is created when you pass both the container directory and the host directory that should be mounted:
+
+```bash
+# docker container run -v <host_dir>:<container_dir> <image>
+docker container run -v /home/mount/data:/data/db -d --net network_example --name mongo mongo:4.4
+```
+
+Now, you can verify that the folder **/home/mount/data** was created. I highly recommend you to run the MongoExpress container and save some data on the MongoDB then restarts the container and see that the data is really there after the restart.
+
+You can remember easily of which volume type is the **host volume**, by remembering that this is the volume that you need to specify the host directory. 
+
+On the next types I keep my recommendation to you do tests using the MongoExpress and restarting the MongoDB container. So I won't keep repeating myself.
+
+##### Anonymous Volume
+
+This type of volume is created when you just specify the container directory. When you do that you tell Docker that you want to persist that specific folder but don't care where on the host it should be. So the Docker manage this for you.
+
+```bash
+docker container run -v /data/db -d --net network_example --name mongo mongo:4.4
+```
+
+You can remember which volume type is the **anonymous volume**, by remembering that is the case which you don't specify a host directory so Docker creates automatically one and you know nothing about the directory except that was created by Docker and the container data is persisted inside it. 
+
+##### Named Volume
+
+Lastly, the named volume is a "improvement" of the anonymous volume. When using a named volume, you can reference the volume to be used by its name. 
+
+This is the type of volume you should use on production.
+
+```bash
+# when using named volumes, you need to create them first
+docker volume create volume_example
+
+# now you can use it
+docker container run -v volume_example:/data/db -d --net network_example --name mongo mongo:4.4
+```
 
 ## Docker Compose
 
@@ -501,3 +544,11 @@ A useful command to see the logs of a container running on dettached mode is:
 ```bash
 docker container logs <id|name>
 ```
+
+---
+
+<br/>
+
+<h2 style="text-align: center;"> That's all folks!</h2>
+
+<h3 style="text-align: center;"> Check also my <a href="https://github.com/marciorasf/kubernetes-fundamentals">Kubernetes Fundamentals</a>
