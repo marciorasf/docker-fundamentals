@@ -18,13 +18,13 @@ The "isolated" characteristic is essential to the idempotency provided by the us
 
 The main difference between **containers** and **virtual machines**, is that containers virtualize the **operating system**, while virtual machines virtualize the **hardware** to run multiple OS instances.
 
-Consequently, the biggest advantage of using containers is the reduction of the overhead on storage, memory and CPU resources. This can achieved because each container doesn't have to have it own OS.
+Consequently, the biggest advantage of using containers is the reduction of the overhead on storage, memory and CPU resources. This can achieved because each container doesn't have to have its own OS.
 
 This advantage can be seen clearly when we compare the container size and the initialization time. Most containers have only megabytes in size and take seconds do start, while VMs have gigabytes and take minutes to initialize.
 
 ---
 
-## Why use it
+## Why use Docker
 
 - Idempotency - ensures that the app has the same behavior independently of the environment.
 
@@ -54,7 +54,7 @@ A **Docker Registry** stores Docker images. The default registry used with Docke
 
 ---
 
-## How to use
+## How to use Docker
 
 ### Requirements
 
@@ -129,7 +129,7 @@ docker exec <container_name|container_id> <command>
 
 #### Attach to running container
 
-After start a container in dettached mode, it may be necessary to attach to it again. To do it use the **attach** command:
+After start a container in dettached mode, it may be necessary to attach to it again. To do it, use the **attach** command:
 
 ```bash
 docker attach <container_name|container_id>
