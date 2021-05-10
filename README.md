@@ -1,4 +1,6 @@
-# docker-study
+# Docker Fundamentals
+
+This repo is a guide to learning the fundamentals of Docker. I wrote it while I was learning to help me cement the knowledge acquired, and of course, to be a guider to help others.
 
 ## What is Docker
 
@@ -6,7 +8,9 @@ Docker is a software that providade several tools to work with containers with e
 
 ### What is a container
 
-A container is a isolated environment, with the configurations and dependencies needed to execute apps properly inside it. The "isolated" characteristic is essential to the idempotency provided by the use of containers, which means that no matter where the container is executed, the behavior should be the same.
+A container is an isolated environment, with the configurations and dependencies needed to execute apps properly inside it.
+
+The "isolated" characteristic is essential to the idempotency provided by the use of containers, which means that no matter where the container is executed, the behavior should be the same.
 
 ### Container vs Virtual Machine
 
@@ -14,7 +18,7 @@ The main difference between **containers** and **virtual machines**, is that con
 
 Consequently, the biggest advantage of using containers is the reduction of the overhead on storage, memory and CPU resources. This can achieved because each container doesn't have to have it own OS.
 
-This advantage can be seen clearly when we compare the size and initialization. Most containers have only megabytes in size and take seconds do start, while VMs have gygabytes and take minutes to initialize.
+This advantage can be seen clearly when we compare the container size and the initialization time. Most containers have only megabytes in size and take seconds do start, while VMs have gigabytes and take minutes to initialize.
 
 ---
 
@@ -34,15 +38,17 @@ This advantage can be seen clearly when we compare the size and initialization. 
 
 ### Docker Client
 
-Docker Client is the way that users usually communicate with the Docker Engine.
+Docker Client serves as an interface to enable the communication between the users and the Docker Engine.
+
+When you enter some command like **docker container ls**, this command is received by the Docker Client so it can be passed to the Docker Daemon.
 
 ### Docker Daemon
 
 The Docker Daemon is responsible to listen for Docker Client requests and based on them, manage Docker objects such as images, containers, networks and volumes.
 
-### Registry
+### Docker Registry
 
-A Docker registry stores Docker images. The default registry used with Docker is the Docker Hub, which is a kind of GitHub for Docker images.
+A **Docker Registry** stores Docker images. The default registry used with Docker is the Docker Hub, which is a kind of GitHub for Docker images. But you can use private services too, like the AWS ECR or the Google Cloud Container Registry.
 
 ---
 
@@ -52,7 +58,7 @@ A Docker registry stores Docker images. The default registry used with Docker is
 
 Docker must be installed. The installation guide can be found [here](https://docs.docker.com/engine/install/ubuntu/).
 
-To this specific tutorial is recommended to fork the repo, so you can use the server on it to create your image.
+To this specific tutorial is recommended to fork this repo, so you can use the server folder on it to create your own example image.
 
 ### Container
 
@@ -60,7 +66,10 @@ A container is a isolated environment used to run apps inside it. The "isolated"
 
 #### Run container
 
+You can a container with the following command:
+
 ```bash
+# docker container run <image>
 docker container run hello-world
 ```
 
@@ -70,7 +79,7 @@ Note that when this command is executed, the first line printed is (if you doesn
 Unable to find image 'hello-world:latest' locally
 ```
 
-After the message, the image starts to be downloaded. The download is made from Docker Hub. Following the container is created, the program is executed and then the process ends.
+After the message, the image starts to be downloaded. The download is made from Docker Hub. Next, the container is created, the app is executed and then the process ends.
 
 If you run the same command again, the image will be available locally, so it doesn't have to be downloaded again.
 
@@ -82,7 +91,7 @@ The hello-world container is created, executed and the finishes. But this is not
 docker container run nginx
 ```
 
-After creating the container, you can see that the container stay alive (use **ctrl + c**, to stop the process). To not have to keep a terminal locked with this process, you can use the detach mode with the **-d** option.
+After creating the container, you can see that the container stay alive (use **ctrl + c**, to stop the process). To not have to keep a terminal locked with this process, you can use the **dettached mode** with the **-d** option.
 
 ```bash
 docker container run -d nginx
@@ -110,7 +119,7 @@ Now you should see the other containers.
 
 #### Execute command on running container
 
-You can execute commands inside containers:
+You can execute commands inside containers with:
 
 ```bash
 docker exec <container_name|container_id> <command>
@@ -118,7 +127,7 @@ docker exec <container_name|container_id> <command>
 
 #### Attach to running container
 
-To attach to a container running on background use the **attach** command:
+After start a container in dettached mode, it may be necessary to attach to it again. To do it use the **attach** command:
 
 ```bash
 docker attach <container_name|container_id>
@@ -126,7 +135,7 @@ docker attach <container_name|container_id>
 
 #### Port bind
 
-By default, the containers ports aren't accessible from outside docker. To overcome this problem, a port bind can be made using the **-p** option.
+By default, the containers ports aren't accessible from outside docker. To overcome this problem, you can bind a container port with a host port using the **-p** option:
 
 ```bash
 # docker container -p <pc_port>:<container_port> nginx
@@ -135,38 +144,62 @@ docker container run -p 8080:80 nginx
 
 Now, a nginx welcome should be displayed on <http://localhost:8080>
 
+#### Create named container
+
+You also can create a container with a specific name:
+
+```bash
+docker run --name mynginx nginx
+```
+
 #### Interactive mode
 
-Some containers can run in interactive mode. For example a ubuntu container that can open a terminal. To achieve this, you have to use the **-it** option.
+Some containers can run in interactive mode. For example a ubuntu container that can open a terminal. To achieve this, you have to use the **-it** option:
 
 ```bash
 docker container run -it ubuntu /bin/bash
 ```
 
+Now you're inside the container and can use commands like if you were on your PC own terminal.
+
 Enter **exit** command to exit container.
 
 #### Stop container
 
-To stop a container:
+A container runs forever if you don't stop it. The command to stop a running container is:
 
 ```bash
 docker container stop <container_name|container_id>
 ```
 
-#### Start stoppepd containers
+#### Start stopped containers
 
-Running **ls** command with **-a** option, should show you the nginx container.
-
-If you run again
-
-```bash
-docker container run -d -p 8080:80 nginx
-```
-
-A new nginx container will be created. Instead, you can just restart the old container with:
+Everytime you enter **docker container run** a new container is created. Sometimes you should prefer restart stopped containers, instead of creating new ones. To do it, use :
 
 ```bash
 docker container start <name|id>
+```
+
+Let's see an example:
+
+```bash
+# start a nginx container
+docker container run -d --name my_nginx nginx:1.19-alpine
+
+# list you running containers. You should see the created nginx container
+docker ls
+
+# stop your container
+docker container stop nginx:1.19-alpine
+
+# list your running containers and see that the nginx container is not on the list
+docker ls
+
+# restart your container
+docker container start my_nginx
+
+# list your running containers again and see that the nginx container is running
+docker container ls
 ```
 
 #### Remove container
@@ -187,14 +220,6 @@ Other option is using **prune** to remove all stopped containers:
 
 ```bash
 docker container prune
-```
-
-#### Create named container
-
-An additional information: you also can create a container with a specific name:
-
-```bash
-docker run --name mynginx nginx
 ```
 
 ### Image
