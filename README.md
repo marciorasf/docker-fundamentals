@@ -526,38 +526,127 @@ docker volume rm <name>
 
 ## Docker Compose
 
+### Requirements
+
+You have to have the DockerCompose installed. You can find the installation guide [here](https://docs.docker.com/compose/install/).
+
 DockerCompose is a wonderful tool to ochestrate Docker containers. Using DockerCompose you can start several containers based on a yaml file (usually called docker-compose.yaml). This enables you to starts your containers in a much faster way, including all configurations we saw on whis guide.
 
-Let's take a look on an example of a docker-compose.yaml
+
+### Running containers
+
+Let's take a look on an example of a docker-compose.yaml where I added a MongoDB, MongoExpress and Nginx containers.
 
 ```yaml
-version:3
+version: "3"
 
 services:
   mongodb:
     image: mongo:4.4
     container_name: my_mongo
     ports:
-      -27017:27017
-    volume:
+      - 27017:27017
+    volumes:
       - my_mongo_data:/data/db
+    networks:
+      - my_mongo_network
 
   mongo-express:
     image: mongo-express:0.54
     container_name: my_mongo_express
     ports:
-      -8081:8081
+      - 8081:8081
+    networks:
+      - my_mongo_network
     environment:
       ME_CONFIG_MONGODB_SERVER: my_mongo
     
+  nginx:
+    image: nginx:1.19-alpine
+    container_name: my_nginx
+    ports:
+      - 8080:80
+      
 volumes:
-  my_mongo_data
+  my_mongo_data:
 
-network
+networks:
+  my_mongo_network:
+    driver: bridge
 ```
 
+The network configuration is not needed when using DockerCompose, because it creates a network automatically to enable the containers declared inside the .yaml to communicate with each others.
 
-The docker compose
+To start the containers, just enter:
+
+```bash
+docker-compose up
+```
+
+Now you should see the all containers' logs mixed.
+
+#### Stopping the containers
+
+You can stop the containers typing **ctrl+c**. When you type **ctrl+c** the DockerCompose will send signals to the containers so they can stop properly. You also can type it again so it'll force the containers to stop immediately.
+
+#### Initialization order problem
+
+It's important to note that when you start the containers, they start simutaneously. This means that we could have some problems with MongoExpress because it can starts much before MongoDB, so it wouldn't connect correctly.
+
+On the docker-compose.yaml you can configure the order of service startup using **depends_on**. Let's see how it's used:
+
+```yaml
+version: "3"
+
+services:
+  mongodb:
+    image: mongo:4.4
+    container_name: my_mongo
+    ports:
+      - 27017:27017
+    volumes:
+      - my_mongo_data:/data/db
+    networks:
+      - my_mongo_network
+
+  mongo-express:
+    image: mongo-express:0.54
+    container_name: my_mongo_express
+    ports:
+      - 8081:8081
+    networks:
+      - my_mongo_network
+    environment:
+      ME_CONFIG_MONGODB_SERVER: my_mongo
+    
+  nginx:
+    image: nginx:1.19-alpine
+    container_name: my_nginx
+    ports:
+      - 8080:80
+      
+volumes:
+  my_mongo_data:
+
+networks:
+  my_mongo_network:
+    driver: bridge
+```
+
+With this change, the DockerExpress container will only start when the MongoDB container is already started.
+
+You can find this docker-compose.yaml file on the root of this repo.
+
+
+### Removing created containers, networks, images and volumes
+
+Instead of removing the containers, images, networks and volumes one by one after using the **up** command, you can remove them with **down** command:
+
+```bash
+docker-compose down
+```
+
+This command by default will stop and remove the containers and networks created. See the [official command docs](https://docs.docker.com/compose/reference/down/) for all the options available.
 
 ## Miscellaneous
 

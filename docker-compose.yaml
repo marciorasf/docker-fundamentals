@@ -1,0 +1,37 @@
+version: "3"
+
+services:
+  mongodb:
+    image: mongo:4.4
+    container_name: my_mongo
+    ports:
+      - 27017:27017
+    volumes:
+      - my_mongo_data:/data/db
+    networks:
+      - my_mongo_network
+
+  mongo-express:
+    image: mongo-express:0.54
+    container_name: my_mongo_express
+    ports:
+      - 8081:8081
+    networks:
+      - my_mongo_network
+    environment:
+      ME_CONFIG_MONGODB_SERVER: my_mongo
+    depends_on:
+      - "mongodb"
+    
+  nginx:
+    image: nginx:1.19-alpine
+    container_name: my_nginx
+    ports:
+      - 8080:80
+
+volumes:
+  my_mongo_data:
+
+networks:
+  my_mongo_network:
+    driver: bridge
