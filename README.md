@@ -428,13 +428,31 @@ We'll use a MongoDB and a MongoExpress (SBGB for mongo) container and communicat
 
 ```bash
 # run the MongoDB container. We have to name the container so the MongoExpress can find it
-docker container run -d --net network_example --name mongo mongo:4.4
+docker container run -d --net network_example --name my_mongo mongo:4.4
 
 # run the MongoExpress container binding the port, so we can access via browser
+# we have to pass the environment variable ME_CONFIG_MONGODB_SERVER using -e 
+# so the MongoExpress can find the MongoDB container
 docker container run --net network_example -p 8081:8081 mongo-express:0.54
 ```
 
 Now both the MongoDB and MongoExpress containers are running in the **network_example** network. You should be able to open MongoExpress on http://localhost:8081.
+
+#### List the available networks
+
+You can list your networks using:
+
+```bash
+docker network ls
+```
+
+#### Remove a network
+
+You can also remove a network using:
+
+```bash
+docker network rm <id|name>
+```
 
 ### Volume
 
@@ -443,6 +461,8 @@ Docker volumes are used for data persistence when using container on Docker. The
 For example: if you're using a MongoDB inside a Docker container, you can save files inside and it will work properly as long as the container keeps running. But, if for some reason the container has to stop, when it starts again the database will be empty.
 
 To understand the volumes on Docker, you need to know that when you start a container, it has a virtual file system which is the place that the container stores the data. What a volume does is basically mount a folder of the host file system into the virtual file system of the Container. After been mounted, everything that stored on that virtual file system folder will be replicated to host folder.
+
+#### Volume types
 
 There are 3 volume types in Docker. Let's take a look on them.
 
@@ -487,7 +507,55 @@ docker volume create volume_example
 docker container run -v volume_example:/data/db -d --net network_example --name mongo mongo:4.4
 ```
 
+#### List the available volumes
+
+You can list your volumes using:
+
+```bash
+docker volume ls
+```
+
+#### Remove a volume
+
+You can also remove a volume using:
+
+```bash
+docker volume rm <name>
+```
+
+
 ## Docker Compose
+
+DockerCompose is a wonderful tool to ochestrate Docker containers. Using DockerCompose you can start several containers based on a yaml file (usually called docker-compose.yaml). This enables you to starts your containers in a much faster way, including all configurations we saw on whis guide.
+
+Let's take a look on an example of a docker-compose.yaml
+
+```yaml
+version:3
+
+services:
+  mongodb:
+    image: mongo:4.4
+    container_name: my_mongo
+    ports:
+      -27017:27017
+    volume:
+      - my_mongo_data:/data/db
+
+  mongo-express:
+    image: mongo-express:0.54
+    container_name: my_mongo_express
+    ports:
+      -8081:8081
+    environment:
+      ME_CONFIG_MONGODB_SERVER: my_mongo
+    
+volumes:
+  my_mongo_data
+
+network
+```
+
 
 The docker compose
 
