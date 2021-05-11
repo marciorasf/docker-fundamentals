@@ -618,6 +618,8 @@ services:
       - my_mongo_network
     environment:
       ME_CONFIG_MONGODB_SERVER: my_mongo
+    depends_on:
+      - mongodb
     
   nginx:
     image: nginx:1.19-alpine
@@ -700,6 +702,14 @@ A useful command to see the logs of a container running on dettached mode is:
 
 ```bash
 docker container logs <id|name>
+```
+
+### Pass a file to docker-compose
+
+When you have a file named **docker-compose.yaml**, DockerCompose automatically recognizes it. But you can specify a file using **-f** option. This is very useful when you have different containers for development and testing for example.
+
+```bash
+docker-compose -f container.yaml up
 ```
 
 ---
