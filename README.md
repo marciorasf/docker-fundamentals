@@ -1,6 +1,6 @@
 # Docker Fundamentals
 
-This repo is a guide to learning the fundamentals of Docker. I wrote it while I was learning to help me cement the knowledge acquired, and of course, to be a guider to help others.
+This repo is a guide to learning the fundamentals of Docker. I wrote it while I was learning to help me cement the knowledge acquired, and of course, to be a guide to help others.
 
 I tried to write only the basics here, as the repo name says, only the fundamentals to start using Docker properly.
 
